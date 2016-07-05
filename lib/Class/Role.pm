@@ -2,9 +2,9 @@
 package Class::Role;
 
 use 5.006;
+use strict;
+use warnings;
 use Carp;
-
-our $VERSION = 0.03;
 
 my %valid_option_keys = (
     -excludes => 1,
@@ -30,6 +30,8 @@ sub import {
     
     my $package = caller;
     
+    no strict 'refs';
+
     ${"$package\::__IS_ROLE__"} = 1;
     
     *{"$package\::import"} = sub {
@@ -121,12 +123,12 @@ EOC
                 # Overwrite
                 for (@conflicts) {
                     if (${"$target\::__IS_ROLE__"}) {
-                        *{"$target\::$method"} = \&{"$package\::$method"};
+                        *{"$target\::$_"} = \&{"$package\::$_"};
                     }
                     else {
                         eval <<EOC;
                             package $target;
-                            *$method = sub { &$package\::$method };
+                            *$_ = sub { &$package\::$_ };
 EOC
                     }
                     $roles->{$_} = [ $package ];
@@ -139,7 +141,21 @@ EOC
     };
 }
 
-package PARENT;
+package PARENTCLASS;
+
+my %builtin_types = (
+    SCALAR  => 1,
+    ARRAY   => 1,
+    HASH    => 1,
+    CODE    => 1,
+    REF     => 1,
+    GLOB    => 1,
+    LVALUE  => 1,
+    FORMAT  => 1,
+    IO      => 1,
+    VSTRING => 1,
+    Regexp  => 1,
+);
 
 sub AUTOLOAD {
     my $name = our $AUTOLOAD;
@@ -164,7 +180,7 @@ Class::Role - Support for the role object model
 
     package LongLiver;
         use Class::Role;              # This is a role
-    
+
         sub profess {
             my ($self) = @_;
             print $self->name . " live a long time\n";
@@ -274,10 +290,14 @@ were written directly into the combining class: C<SUPER> doesn't work
 right.  C<SUPER> would instead look in any base classes of the I<role>,
 not of the the combining class.
 
-To circumvent this, C<Class::Role> provides the pseudopackage C<PARENT>,
+To circumvent this, C<Class::Role> provides the pseudopackage C<PARENTCLASS>,
 which works exactly like C<SUPER>, except that it works correctly for
-(and I<only> for) roles.  So, when you're writing a role, use C<PARENT>
-instead of C<SUPER>.
+(and I<only> for) roles.
+So, when you're writing a role, use C<PARENTCLASS> instead of C<SUPER>.
+
+B<NOTE>: in the first release of this module,
+C<PARENTCLASS> was named C<PARENT>,
+but that was conflicting with the C<parent> module.
 
 =head1 SEE ALSO
 

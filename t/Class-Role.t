@@ -7,7 +7,7 @@ sub foo { 10 }
 sub bar { 20 }
 sub baz { 30 }
 sub fru { 50 }
-sub foz { my ($self) = @_; $self->PARENT::foz * 1000 }
+sub foz { my ($self) = @_; $self->PARENTCLASS::foz * 1000 }
 
 package Whiff;
 
@@ -49,11 +49,11 @@ my $niphth = Niphth->new;
 ok($splort->foo == 100,     "override");
 ok($splort->bar == 2,       "exclude");
 ok($splort->baz == 30,      "role override");
-ok($splort->foz == 4000,    "PARENT");
+ok($splort->foz == 4000,    "PARENTCLASS");
 ok($splort->fru == 50,      "role");
 ok($niphth->rab == 31,      "role.. again");
 ok($niphth->foo == 10,      "composing roles");
 ok($niphth->bar == 13,      "overriding composed roles");
-ok($niphth->foz == 19000,   "PARENT in composed roles");
+ok($niphth->foz == 19000,   "PARENTCLASS in composed roles");
 
 # vim: ft=perl:
