@@ -225,7 +225,7 @@ combining object, not defined by the role itself.  They are incorporated
 in as if they were written directly into the combining class.
 
 To define a role, create a package with the methods you want the role to
-provide, and C<use Class::Role>, as in the L<SYNOPSIS>.
+provide, and C<use Class::Role>, as in the L</SYNOPSIS>.
 
 When creating a role, you may specify which methods you wish to export
 to the combining class with the C<-methods> option.  If the option is
