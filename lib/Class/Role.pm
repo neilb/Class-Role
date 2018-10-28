@@ -301,7 +301,7 @@ but that was conflicting with the C<parent> module.
 
 =head1 SEE ALSO
 
-C<mixin>, C<Class::Mixin>
+L<mixin>, L<Class::Mixin>
 
 =head1 AUTHOR
 
